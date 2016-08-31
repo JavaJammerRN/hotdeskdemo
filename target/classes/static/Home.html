@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+    	<link id="favicon" href="https://s31.postimg.org/fuv7kn3i3/images.png" rel="shortcut icon">
+
+		<title>Home</title>
+
+		<!--JavaScript files for fullCalendar -->
+		<script src='../fullCalendar/js/moment.min.js'></script>
+		<script src='../fullCalendar/js/jquery.min.js'></script>
+		<script src='../fullCalendar/js/fullcalendar.min.js'></script>
+		<script src='../JS/fullCal.js'></script>
+
+		<!--CSS files for fullCalendar -->
+		<link href='../fullCalendar/css/fullcalendar.css' rel='stylesheet' />
+		<link href='../fullCalendar/css/fullcalendar.print.css' rel='stylesheet' media='print' />
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+        <!--JS and CSS files for datepicker -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+		<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  <!--When adding this, responsive navbar works, but calendar is then lost -->
+
+
+		<style>
+			#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+			}
+			
+
+			.datepicker{z-index:1151 !important};
+		</style>
+	</head>
+
+	<body>
+
+<!-- Error Modal for day in past-->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+   		<div class="modal-header">
+   			<h1><center><i class="glyphicon glyphicon-alert" style="color:#d9534f"></i></center></h1>
+      		<h3><center>Error</center></h3>
+      		<h4><center>Date is in the past</center></h4>
+      	</div>
+      		<div class="modal-footer">
+            	<button type="button" class="btn btn-danger" align="center" data-dismiss="modal">Close</button>
+            </div>
+    </div> 	
+  </div>
+</div>
+
+<!-- Event Modal to view details and possible edit-->
+<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+   		<div class="modal-header">
+   			
+      		<h4><center>Booking Details</center></h4>
+      		
+      	</div>
+      	<div class="modal-body">
+      		<div id="bookingDetails"></div>
+      	</div>
+      		<div class="modal-footer">
+      			
+            <button type="button" class="btn btn-default" align="center" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-warning">Edit</button>
+            <button type="button" id="del" class="btn btn-danger">Delete</button>
+            </div>
+    </div> 	
+  </div>
+</div>                                           
+              
+<!-- Modal for date search -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4><center>Book a Hot Desk</center></h4>
+      </div>
+      <div class="modal-body">
+         <div class="form-group">
+          <label class="control-label requiredField" for="date1">Start Date</label>
+            <div class="input-group">
+              <div class="input-group-addon">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </div>
+              <input class="form-control" id="sdate" name="date1" type="text" disabled="" />
+            </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label requiredField" for="date2">End Date</label>
+            <div class="input-group">
+              <div class="input-group-addon">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </div>
+              <input class="form-control" id="edate" name="date2" placeholder="MM/DD/YYYY" type="text"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sel1">Location</label>
+          <div class="input-group">
+              <div class="input-group-addon">
+                <i class="glyphicon glyphicon-globe"></i>
+              </div>
+            <select class="form-control" id="select" disabled="" >
+              <option>Edinburgh</option>
+              <option>Glasgow</option>
+              <option>Belfast</option>
+              <option>Hemel</option>
+            </select>
+          </div>
+        </div>
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger">Search</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+	<!--Navigation Bar -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  		<div class="container">
+    		<div class="navbar-header">
+    			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            		<span class="sr-only">Toggle navigation</span>
+            		<span class="icon-bar"></span>
+            		<span class="icon-bar"></span>
+            		<span class="icon-bar"></span>
+          		</button>
+      			<a class="navbar-brand"><i class="glyphicon glyphicon-fire"></i> Hot Desk Booking System </a>
+    		</div>
+
+			<div class="navbar-collapse collapse"> 
+	    		<ul class="nav navbar-nav navbar-right">
+	      			<li class="active"><a href="Home.html"><i class="glyphicon glyphicon-home"></i> Home </a></li>
+	      			<li><a href="Booking-Unfinished.html"><i class="glyphicon glyphicon-book"></i> Booking </a></li>
+              <li><a href="login.html"><i class="glyphicon glyphicon-off"></i> Logout </a></li> 
+	    		</ul>
+    		</div>
+  		</div>
+	</nav>
+		<br><br><br>
+	<div class="container">
+		<div id='calendar'>
+		</div>
+	</div>
+	</body>
+</html>
