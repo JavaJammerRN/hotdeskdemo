@@ -8,37 +8,28 @@
 	<title>Home</title>
 
 	<!--JavaScript files for fullCalendar -->
-	<script src='..\fullCalendar\js\moment.min.js'></script>
-	<script src='..\fullCalendar\js\jquery.min.js'></script>
-	<script src='..\fullCalendar\js\fullcalendar.min.js'></script>
-	<script src='..\JS\fullCal.js'></script>
-
+	<script src='../fullCalendar/js/moment.min.js'></script>
+	<script src='../fullCalendar/js/jquery.min.js'></script>
+	<script src='../fullCalendar/js/fullcalendar.min.js'></script>
+	<script src='../JS/fullCal.js'></script>
 	<!--CSS files for fullCalendar -->
-	<link href='..\fullCalendar\css\fullcalendar.css' rel='stylesheet' />
-	<link href='..\fullCalendar\css\fullcalendar.print.css' rel='stylesheet' media='print' />
-
+	<link href='../fullCalendar/css/fullcalendar.css' rel='stylesheet' />
+	<link href='../fullCalendar/css/fullcalendar.print.css' rel='stylesheet' media='print' />
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
 	<!--JS and CSS files for datepicker -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
-
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  <!--When adding this, responsive navbar works, but calendar is then lost -->
-
 
 	<style>
 	#calendar {
 		max-width: 1000px;
 		margin: 0 auto;
 	}
-
 
 	.datepicker{z-index:1151 !important};
 	</style>
@@ -66,7 +57,6 @@
 				<div class="modal-header">
 					<h1><center><i class="glyphicon glyphicon-ok" style="color:#5cb85c"></i></center></h1>
 					<h3><center>Success</center></h3>
-					<!--<h4><center>The Booking has been created!</center></h4>-->
 					<h4><center><div id="insertTextConfirms"></div></center></h4>
 				</div>
 			</div>
@@ -111,22 +101,14 @@
 		<div class="modal-dialog modal-sm" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-
 					<h2><center>Booking Details</center></h2>
-
 				</div>
 				<div class="modal-body">
 					<div id="bookingDetails"></div>
 				</div>
 				<div class="modal-footer">
-
 					<button type="button" id="closeBooking" class="btn btn-default" align="center" data-dismiss="modal">Close</button>
 					<button type="button" id="editBooking" class="btn btn-warning">Edit</button>
-
-
-					<!--
-					<a href='Booking.html' class='btn btn-warning' id="editBooking"> Edit </a>
-				-->
 				<button type="button" id="del" class="btn btn-danger">Delete</button>
 			</div>
 		</div>
@@ -177,8 +159,6 @@
 					</div>
 				</div>
 
-
-
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -204,8 +184,8 @@
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
 				<li class="active"><a href="Home.html"><i class="glyphicon glyphicon-home"></i> Home </a></li>
-				<li><a href="Booking.html"><i class="glyphicon glyphicon-book"></i> Booking </a></li>
-				<li><a href="login.html"><i class="glyphicon glyphicon-off"></i> Logout </a></li>
+				<li><a href="booking.html"><i class="glyphicon glyphicon-book"></i> Booking </a></li>
+				<li><a href="index.html"><i class="glyphicon glyphicon-off"></i> Logout </a></li>
 			</ul>
 		</div>
 	</div>

@@ -3,9 +3,11 @@
 var redsconnection= "http://ukl5cg6195g1q:8080/";
 //Mike's Connection
 var mikesconnection = "http://UKL5CG6195GRV:8080/";
+//LocalHost Connection
+var localhost = "http://localhost:8080/";
 //Choose a Connection
-var defaultConnection=redsconnection;
-//var defaultConnection=mikesconnection;
+//var defaultConnection=redsconnection;
+var defaultConnection=localhost;
 var daysCounter = 0;
 var desksCounter = 0;
 
@@ -16,18 +18,18 @@ $(document).ready(function() {
   //Update GIS table
   putRequestForGIS(new Array());
 
-  //Add the start and the end dates to the datepickers
-
   //Check if the user wants to edit a current booking or create a new one
   if(sessionStorage.getItem('newEdit') == "Edit"){
     //Send request for seats availability
     searchAvailableSeats(sessionStorage.getItem('startDate'), sessionStorage.getItem('endDate'));
+    //Add the start and the end dates to the datepickers
     $('#sdate').val(sessionStorage.getItem('startDate'));
     $('#edate').val(sessionStorage.getItem('endDate'));
     $('#select').val(sessionStorage.getItem('location'));
   }
   else if(sessionStorage.getItem('newEdit') == "Close"){
     sessionStorage.setItem('newEdit', "");
+    $('#select').val(sessionStorage.getItem('location'));
   }
   else{
     $('#sdate').val(sessionStorage.getItem('startDate'));
@@ -94,7 +96,6 @@ $(document).ready(function() {
         $('#insertTextError').append("A booking cannot have a length greater than 14 days!");
         $('#errorModal').modal({backdrop: "static"});
         setTimeout(function() { $('#errorModal').modal('hide'); },1500);
-        //alert("A booking cannot have a length greater than 14 days");
       }
     }
   });
@@ -110,7 +111,6 @@ $(document).ready(function() {
       $('#insertTextError').append("Please select a seat for each day of the booking!");
       $('#errorModal').modal({backdrop: "static"});
       setTimeout(function() { $('#errorModal').modal('hide'); },1500);
-      //alert("Please select a seat for each day of the booking!");
     }
     else{
       //Add all the data related to the booking to the var bookingData
@@ -164,27 +164,6 @@ $(document).ready(function() {
               setTimeout(function() { $('#errorModal').modal('hide'); },1500);
             }
           },
-          // success: function(result){
-          //   //console.log(result);
-          //   //Load the home page with all the bookingDetails after resetting the session object to undefined
-          //   sessionStorage.setItem('newEdit',"");
-          //   //Update text to confirmation modal
-          //   $('#insertTextConfirm').val("Booking Updated Correctly!");
-          //   //Show a confirmation message for 1 sec
-          //   //Open this link in the same window
-          //   $('#confirmationModal').modal({backdrop: "static"});
-          //   setTimeout(function() { $('#confirmationModal').modal('hide');
-          //   window.location = "home.html"},1000);
-          // },
-          // error: function(xhr,status,error){
-          //   console.log(error);
-          //   console.log(status);
-          //   console.log(xhr);
-          //   //Update text to error modal
-          //   $('#insertTextError').append("BAD BAD DEVELOPER");
-          //   $('#errorModal').modal({backdrop: "static"});
-          //   setTimeout(function() { $('#errorModal').modal('hide'); },1000);
-          // }
         });
       }
       else{
@@ -220,19 +199,6 @@ $(document).ready(function() {
               setTimeout(function() { $('#errorModal').modal('hide'); },1500);
             }
           },
-          // success: function(result){
-          //   //Load the home page with all the bookingDetails after resetting the session object to undefined
-          //   sessionStorage.setItem('newEdit',"");
-          //   //Show a confirmation message for 1 sec
-          //   //Open this link in the same window
-          //   $('#confirmationModal').modal({backdrop: "static"});
-          //   setTimeout(function() { $('#confirmationModal').modal('hide');
-          //   window.location = "home.html"},1000);
-          // },
-          // error: function(error){
-          //   $('#errorModal').modal({backdrop: "static"});
-          //   setTimeout(function() { $('#errorModal').modal('hide'); },1000);
-          // },
         });
       }
     }
@@ -253,14 +219,7 @@ function searchAvailableSeats(sD, eD){
   eD=new Date(eD);
   //add if statement to ensure that both dates have been selected
   $('.headers').append("<th scope='col'><center>Desk Number</center></th>");
-  //var startdate = $('#sdate').val();
-  //console.log(startDate);
-  //var enddate = $('#edate').val();
   var location = "Edinburgh";
-
-  //var start = new Date(startdate);
-  //var end = new Date(enddate);
-
 
   for(var d = sD; d <= eD; d.setDate(d.getDate() +1)){
     if(d.getDay()!=6 && d.getDay()!=0){
@@ -271,7 +230,6 @@ function searchAvailableSeats(sD, eD){
   $.getJSON(defaultConnection+"booking/checkSingleAvailability", {
     location:location, startDate: startString, endDate: endString, bookingId: sessionStorage.getItem('bookingID')})
     .success(function(result) {
-      console.log(result);
       $.each(result, function(key,val){
         //Add the desk number to the array
         desksAvailable.push(val.deskID);
@@ -284,7 +242,6 @@ function searchAvailableSeats(sD, eD){
             daysCounter++;
           }
           if(contains (formatDate(d),val.dates)){
-            //$('#desk'+ key).append("<td id ='"+ formatDate(d) +"' style='text-align:center'><label class='btn btn-success'><input type='radio' id='"+ formatDate(d) +"' required</label></td>");
             $('#desk'+ key).append("<td style='text-align:center'><label class='btn btn-success'><input type='radio' name='"+ formatDate(d) +"' id ='"+ formatDate(d) +"_"+(key+1) +"' required</label></td>");
           }
           else if(d.getDay()!=6 && d.getDay()!=0){
@@ -301,7 +258,6 @@ function searchAvailableSeats(sD, eD){
       $('#insertTextError').append("No Dates Selected!");
       $('#errorModal').modal({backdrop: "static"});
       setTimeout(function() { $('#errorModal').modal('hide'); },1500);
-      //alert("\nError: No Dates Selected");
     });
   }
 
@@ -312,23 +268,9 @@ function searchAvailableSeats(sD, eD){
         'Content-Type': 'application/json'
       },
       dataType: "json",
-      url:redsconnection+"gis",
+      url:defaultConnection+"gis",
       method: "PUT",
       data: JSON.stringify({"deskIDs": dataObj}),
-      // complete: function(event, xhr, settings){
-      //   if(xhr!="parserror"){
-      //     alert("WELL DONE");
-      //   }
-      //   else{
-      //     alert("Error");
-      //   }
-      //   console.log(event);
-      //   console.log(xhr);
-      //   console.log(settings);
-      // },
-      // fail: function(d, status, error){
-      //   alert("GIS Problem");
-      // }
     });
   }
 

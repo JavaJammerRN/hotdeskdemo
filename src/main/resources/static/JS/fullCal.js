@@ -2,9 +2,11 @@
 var redsconnection= "http://ukl5cg6195g1q:8080/";
 //Mike's Connection
 var mikesconnection = "http://UKL5CG6195GRV:8080/";
+//LocalHost Connection
+var localhost = "http://localhost:8080/";
 //Choose a Connection
-var defaultConnection=redsconnection;
-//var defaultConnection=mikesconnection;
+//var defaultConnection=redsconnection;
+var defaultConnection=localhost;
 
 $(document).ready(function() {
 	sessionStorage.setItem('newEdit',"");
@@ -20,17 +22,12 @@ $(document).ready(function() {
 			var booking = new Object();
 			booking.title = val.location;
 			booking.start = val.startDate;
-			//booking.end = val.endDate;
 			var dateEnd=new Date(val.endDate);
 			dateEnd.setTime(dateEnd.getTime() + (8*60*60*1000));
 			booking.end = dateEnd;
-			//booking.allDay = true;
 			booking.bookingID = val.bookingID;
-			//booking.rendering = "background";
-			//booking.backgroundColor = "99CCFF";
 			myBooking.push(booking);
 		})
-		//console.log(myBooking);
 		startCal(myBooking);
 	});
 
@@ -53,11 +50,9 @@ $(document).ready(function() {
 	$('#searchAvailability').click(function(){
 		//Set the value of the current session variable to NULL, so it is usable in the future to check if it is a new booking or an edit one
 		sessionStorage.setItem('newEdit',"");
-		//$(this).append("<a href='Booking-Unfinished.html'><i class='glyphicon glyphicon-book'></i> Search </a>");
 		//Add data to the sessionStorage
 		sessionStorage.setItem('bookingID', -1);
 		sessionStorage.setItem('location', $('#select').val());
-		//sessionStorage.setItem('seatsDate', data.seats);
 		sessionStorage.setItem('startDate', $('#sdate').val());
 		sessionStorage.setItem('endDate', $('#edate').val());
 
@@ -91,18 +86,6 @@ $(document).ready(function() {
 				setTimeout(function() { $('#errorModals').modal('hide');$('#myModal').modal('show'); },1500);
 			}
 		}
-
-
-		// $.ajax({
-		// 	type: "UPDATE",
-		// 	url: defaultConnection+"booking/" + bID,
-		// 	success:function(reply){
-		// 		$('#eventModal').modal('hide');
-		// 		window.location.reload();
-		// 		alert(reply);
-		// 	}
-		// })
-
 	});
 
 
@@ -122,48 +105,6 @@ $(document).ready(function() {
 
 			eventClick: function(event, jsEvent, view){
 				eventHasBeenSelected(event.bookingID);
-				// $('#bookingDetails').empty();
-				// //Reset the session Variables
-				// sessionStorage.setItem(sessionStorage.getItem('bookingID'), -1);
-				// sessionStorage.setItem(sessionStorage.getItem('location'), "");
-				// sessionStorage.setItem(sessionStorage.getItem('seatsDate'), null);
-				// //Retrieve data from the API
-				// $.ajax({
-				// 	dataType: "json",
-				// 	url:defaultConnection+"/booking/"+sessionStorage.getItem('userID')+"/ref/"+event.bookingID,
-				// 	method: "GET",
-				// 	success: function(data){
-				// 		$('#bookingDetails').append("<h3> Booking Reference: "+ data.bookingID + "</h3>");
-				// 		$('#bookingDetails').append("<h4> Location: "+ data.location + "</h4>");
-				// 		//Set the correct data
-				// 		sessionStorage.setItem('bookingID', data.bookingID);
-				// 		sessionStorage.setItem('location', data.location);
-				// 		sessionStorage.setItem('seatsDate', data.seats);
-				// 		sessionStorage.setItem('startDate', data.startDate);
-				// 		sessionStorage.setItem('endDate', data.endDate);
-				//
-				// 		//Add each seat to the detail window
-				// 		$('#bookingDetails').append("<h4> Desk Details: </h4>\n");
-				// 		$('#bookingDetails').append("<table>");
-				// 		$('#bookingDetails').append("<tr>");
-				// 		$('#bookingDetails').append("<th><center><h4> Date </h4></th>");
-				// 		$('#bookingDetails').append("<th><center><h4> Desk Block </h4></th>");
-				// 		$('#bookingDetails').append("<th><center><h4> Desk Letter </h4></th>");
-				// 		$('#bookingDetails').append("</tr>");
-				// 		$.each(data.seats, function(){
-				// 			$('#bookingDetails').append("<tr>");
-				// 			$('#bookingDetails').append("<td class='text-right'><center><h4>"+$(this).attr('date')+"</h4></td>");
-				// 			$('#bookingDetails').append("<td class='text-right'><center><h4>"+$(this).attr('deskBlock')+"</h4></td>");
-				// 			$('#bookingDetails').append("<td class='text-right'><center><h4>"+$(this).attr('deskLetter')+"</h4></td>");
-				// 			$('#bookingDetails').append("</tr>");
-				// 			$('#bookingDetails').append("</table>");
-				// 		});
-				// 	},
-				// 	fail: function(){
-				// 		alert("Fail");
-				// 	}
-				// });
-				// $('#eventModal').modal({backdrop: "static"});
 			},
 
 			dayClick: function(date, jsEvent, view){
@@ -176,14 +117,12 @@ $(document).ready(function() {
 						eventBookingID=event.bookingID;
 					}
 				});
-
 				//Verify if an event has been found
 				if(eventBookingID>0){
 					//Bring up the booking details
 					eventHasBeenSelected(eventBookingID);
 				}
 				else{
-
 					//Bring up a create a booing popup window
 					$('#sdate').val(date.format("YYYY-MM-DD"));
 					$('#edate').val("");
@@ -198,18 +137,6 @@ $(document).ready(function() {
 					}
 				}
 
-
-
-				// FromEndDate = new Date(date.format("YYYY-MM-DD"));
-				// if (moment().format('YYYY-MM-DD') === date.format('YYYY-MM-DD') || date.isAfter(moment())) {
-				// 	// This allows today and future date
-				// 	$('#myModal').modal({backdrop: "static"});
-				// } else {
-				// 	// Else part is for past dates
-				// 	$('#errorModal').modal({backdrop: "static"});
-				// }
-
-				// Datepicker appears when enddate input box is selected
 				$('#edate').datepicker({
 					weekStart: 1,
 					daysOfWeekDisabled: [0,6],
@@ -219,21 +146,6 @@ $(document).ready(function() {
 					todayBtn: true,
 					startDate: new Date(date)
 				});
-
-				// $('#sdate').datepicker({
-			  //   weekStart: 1,
-			  //   daysOfWeekDisabled: [0, 6],
-			  //   format: "yyyy-mm-dd",
-			  //   todayHighlight: true,
-			  //   autoclose: true,
-			  //   todayBtn: true,
-			  //   startDate: new Date(),
-			  // }).on('changeDate', function(selected){
-			  //   startDate = new Date(selected.date.valueOf());
-			  //   startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
-			  //   $('#edate').datepicker('setStartDate', startDate);
-			  // });
-				//
 			},
 		});
 
@@ -257,20 +169,19 @@ $(document).ready(function() {
 					sessionStorage.setItem('seatsDate', data.seats);
 					sessionStorage.setItem('startDate', data.startDate);
 					sessionStorage.setItem('endDate', data.endDate);
-
 					//Add each seat to the detail window
 					$('#bookingDetails').append("<h4> Desk Details: </h4>\n");
 					$('#bookingDetails').append("<table>");
 					$('#bookingDetails').append("<tr>");
 					$('#bookingDetails').append("<th><center><h4> Date </h4></th>");
 					$('#bookingDetails').append("<th><center><h4> Desk Block </h4></th>");
-					$('#bookingDetails').append("<th><center><h4> Desk Letter </h4></th>");
+					$('#bookingDetails').append("<th><center><h4>  - Letter </h4></th>");
 					$('#bookingDetails').append("</tr>");
 					$.each(data.seats, function(){
 						$('#bookingDetails').append("<tr>");
-						$('#bookingDetails').append("<td class='text-right'><center><h4>"+$(this).attr('date')+"</h4></td>");
-						$('#bookingDetails').append("<td class='text-right'><center><h4>"+$(this).attr('deskBlock')+"</h4></td>");
-						$('#bookingDetails').append("<td class='text-right'><center><h4>"+$(this).attr('deskLetter')+"</h4></td>");
+						$('#bookingDetails').append("<td class='text-right'><center><h5>"+$(this).attr('date')+"</h5></td>");
+						$('#bookingDetails').append("<td class='text-right'><center><h5>"+$(this).attr('deskBlock')+"</h5></td>");
+						$('#bookingDetails').append("<td class='text-right'><center><h5>"+$(this).attr('deskLetter')+"</h5></td>");
 						$('#bookingDetails').append("</tr>");
 						$('#bookingDetails').append("</table>");
 					});
@@ -320,11 +231,4 @@ $(document).ready(function() {
 			$('#eventModal').modal('show');
 		});
 	}
-
-	// 	$("#calendar").fullCalendar({
-	//     dayRender: function (date, cell) {
-	//         cell.css("background-color", "red");
-	//     }
-	// });
-
 });
