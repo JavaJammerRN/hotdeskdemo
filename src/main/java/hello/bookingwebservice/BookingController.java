@@ -7,15 +7,14 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import hello.giswebservice.GISWrapper;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -33,9 +32,14 @@ public class BookingController {
 	private final static String ERROR_INVALIDDATE="Invalid Date";
 	private final static String ERROR_INVALIDLOCATION="Invalid Location";
 
+	@RequestMapping(value="/test", method=RequestMethod.GET)
+	public ResponseEntity<?> test(){
+		return ResponseEntity.ok("BOOKING is working! :)");
+	}
 
+	
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value="/user/{userID}", method=RequestMethod.GET)
+	@RequestMapping(value="/booking/user/{userID}", method=RequestMethod.GET)
 	public ResponseEntity<?> userBookings(@PathVariable String userID){
 		try{
 			int userIdentification=Integer.parseInt(userID);
@@ -53,7 +57,7 @@ public class BookingController {
 	}
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value="/{userID}/ref/{bookingID}", method=RequestMethod.GET)
+	@RequestMapping(value="/booking/{userID}/ref/{bookingID}", method=RequestMethod.GET)
 	public ResponseEntity<?> userSpecificBooking(
 			@PathVariable("userID") String userID, 
 			@PathVariable("bookingID") String bookingID){
@@ -80,13 +84,14 @@ public class BookingController {
 	}
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value="/checkSingleAvailability", method=RequestMethod.GET)
+	@RequestMapping(value="/booking/checkSingleAvailability", method=RequestMethod.GET)
 	public ResponseEntity<?> retrieveSingleSeatsAvailableOnPeriodOfTime(
 			@RequestParam(value="location") String location, 
 			@RequestParam(value="startDate") String startDate, 
-			@RequestParam(value="endDate") String endDate){
+			@RequestParam(value="endDate") String endDate,
+			@RequestParam(value="bookingId") int bID){
 		try {
-			List<BookingTable> obj=BookingDAO.getIndividualSeatsAvailabilityForLocationDateRange(location, startDate, endDate);
+			List<BookingTable> obj=BookingDAO.getIndividualSeatsAvailabilityForLocationDateRange(location, startDate, endDate, bID);
 			return (obj!=null && obj.size()>0)? ResponseEntity.ok(obj) : ResponseEntity.badRequest().body(ERROR_INVALIDLOCATION);
 
 			//Catch any exception (mysql, numconversion) threw by the method and output them into a bad request  
@@ -99,22 +104,9 @@ public class BookingController {
 		}
 	}
 
-	@CrossOrigin(origins = "*")
-	@RequestMapping(value="/bookingLength", method=RequestMethod.GET)
-	public ResponseEntity<?> retrieveBookingLength(
-			@RequestParam(value="startDate") String startDate, 
-			@RequestParam(value="endDate") String endDate){
-		try{
-			int length=BookingDAO.getBookingLengthPublic(startDate, endDate);
-			//Verify the integer value retrieved
-			return (length>0)? ResponseEntity.ok(length) : ResponseEntity.badRequest().body(ERROR_INVALIDDATE);
-		}catch(Exception e){
-			return ResponseEntity.badRequest().body(ERROR_APPLICATION);
-		}
-	}
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value="/seatsLocation", method=RequestMethod.GET)
+	@RequestMapping(value="/booking/seatsLocation", method=RequestMethod.GET)
 	public ResponseEntity<?> retrieveAllSeatsLocation(
 			@RequestParam(value="location") String location){
 		try{
@@ -125,7 +117,7 @@ public class BookingController {
 	}
 
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value="/seatInfo", method=RequestMethod.GET)
+	@RequestMapping(value="/booking/seatInfo", method=RequestMethod.GET)
 	public ResponseEntity<?> retrieveSeatData(
 			@RequestParam(value="deskId") String deskId){
 		try{
@@ -138,23 +130,37 @@ public class BookingController {
 
 	// POST - create new booking
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/{userID}", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> test(@PathVariable int userID, @RequestBody BookingTableWrapper bookingTableWrapper) throws SQLException, ParseException {
+	@RequestMapping(value = "/booking/{userID}", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> createBooking(@PathVariable int userID, @RequestBody BookingTableWrapper bookingTableWrapper) throws SQLException, ParseException {
 		return BookingDAO.createBooking(userID, bookingTableWrapper);
 	}
 
 	// PUT - update existing booking
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/{bookingID}/user/{userID}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/booking/{bookingID}/user/{userID}", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<String> updateBooking(@PathVariable int userID, @PathVariable int bookingID, @RequestBody BookingTableWrapper bookingTableWrapper) throws SQLException, ParseException {
 		return BookingDAO.updateBooking(userID, bookingID, bookingTableWrapper);
 	}
 
 	// DELETE - delete existing booking
 	@CrossOrigin(origins = "*")
-	@RequestMapping(value = "/{bookingID}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/booking/{bookingID}", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseEntity<String> deleteBooking(@PathVariable int bookingID) {
 		return BookingDAO.deleteBooking(bookingID);
+	}
+	
+	// PUT - update map with all available seats
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = "/gis", method = RequestMethod.PUT)
+	public @ResponseBody ResponseEntity<String> updateMap(@RequestBody GISWrapper desksAvailable) {
+		return BookingDAO.updateMap(desksAvailable);
+	}
+
+	// PUT - delete existing booking
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = "/gis/{deskSelected}", method = RequestMethod.PUT)
+	public @ResponseBody ResponseEntity<String> updateMapSelected(@PathVariable int deskSelected) {
+		return BookingDAO.updateMapSelected(deskSelected);
 	}
 
 
