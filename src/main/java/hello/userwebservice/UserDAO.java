@@ -1,6 +1,5 @@
 package hello.userwebservice;
 
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,13 +8,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.mysql.jdbc.Connection;
 
+import hello.DBSettings;
+
 public class UserDAO {
 
 	public static  ResponseEntity<User> getUserDataByUsername(String userInfo) throws SQLException{
 		//Create a temporary user object to store the user information
 		if(!userInfo.equals("")){
 			//Establish a connection with the database
-			Connection connectionDB=establishConnection();
+			Connection connectionDB=DBSettings.establishConnection();
 			if(connectionDB!=null){
 				try{
 					Statement stmt = connectionDB.createStatement();
@@ -60,20 +61,5 @@ public class UserDAO {
 			}
 		}
 		return null;
-	}
-
-	private static Connection establishConnection(){
-		Connection conn = null;
-		try {
-			// The newInstance() call is a work around for some broken Java implementations
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			//Use for Michaels DB
-//			conn = (Connection) DriverManager.getConnection("jdbc:mysql://UKL5CG6195GRV:3306/hotdesk_db?" +"user=hotdesk&password=hotdesk");
-			//Use for Reds DB
-			conn = (Connection) DriverManager.getConnection("jdbc:mysql://UKL5CG6195G1Q:3306/hotdesk?" +"user=hotdesk&password=hotdesk");
-		} catch (Exception error) {
-			System.err.println("Could not establish a connection with the DataBase! "+error);
-		}
-		return conn;
 	}
 }
